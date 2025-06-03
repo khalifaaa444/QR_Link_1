@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>موقع المستخدم الشخصي</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            color: #333;
+        }
+        
+        .container {
+            width: 100%;
+            max-width: 500px;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
+            overflow: hidden;
+            transition: all 0.5s ease;
+        }
+        
+        .header {
+            background: linear-gradient(90deg, #4776E6 0%, #8E54E9 100%);
+            color: white;
+            padding: 30px 20px;
+            text-align: center;
+            position: relative;
+        }
+        
+        .header h1 {
+            font-size: 2.2rem;
+            margin-bottom: 10px;
+        }
+        
+        .header p {
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+        
+        .content {
+            padding: 30px;
+        }
+        
+        /* استايل نموذج الإدخال */
+        .form-container {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+        
+        .input-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        
+        .input-group label {
+            font-weight: 600;
+            font-size: 1.1rem;
+            color: #555;
+        }
+        
+        .input-group input {
+            padding: 15px;
+            border: 2px solid #ddd;
+            border-radius: 10px;
+            font-size: 1.1rem;
+            transition: all 0.3s;
+        }
+        
+        .input-group input:focus {
+            border-color: #4776E6;
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(71, 118, 230, 0.2);
+        }
+        
+        .btn {
+            background: linear-gradient(90deg, #4776E6 0%, #8E54E9 100%);
+            color: white;
+            border: none;
+            padding: 15px;
+            border-radius: 10px;
+            font-size: 1.2rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-top: 10px;
+        }
+        
+        .btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+        
+        /* استايل عرض البيانات */
+        .data-container {
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            gap: 25px;
+            text-align: center;
+        }
+        
+        .avatar {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #4776E6 0%, #8E54E9 100%);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-top: -70px;
+            border: 5px solid white;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+        
+        .avatar i {
+            font-size: 3.5rem;
+            color: white;
+        }
+        
+        .user-info {
+            width: 100%;
+        }
+        
+        .info-card {
+            background: white;
+            border-radius: 15px;
+            padding: 20px;
+            margin: 15px 0;
+            text-align: right;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            border-left: 5px solid #4776E6;
+            transition: transform 0.3s;
+        }
+        
+        .info-card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .info-card h3 {
+            color: #4776E6;
+            margin-bottom: 10px;
+            font-size: 1.3rem;
+        }
+        
+        .info-card p {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #333;
+        }
+        
+        .welcome-text {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: #4776E6;
+            margin-top: 10px;
+        }
+        
+        .action-btn {
+            background: #f5f5f5;
+            color: #4776E6;
+            border: 2px solid #4776E6;
+            padding: 12px 25px;
+            border-radius: 10px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-top: 10px;
+        }
+        
+        .action-btn:hover {
+            background: #4776E6;
+            color: white;
+        }
+        
+        .footer {
+            text-align: center;
+            padding: 20px;
+            color: #777;
+            font-size: 0.9rem;
+            border-top: 1px solid #eee;
+        }
+        
+        @media (max-width: 480px) {
+            .header h1 {
+                font-size: 1.8rem;
+            }
+            
+            .content {
+                padding: 20px;
+            }
+            
+            .avatar {
+                width: 100px;
+                height: 100px;
+                margin-top: -60px;
+            }
+            
+            .avatar i {
+                font-size: 2.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>مرحبًا بك في موقعنا</h1>
+            <p>نحن سعداء بزيارتك لنا</p>
+        </div>
+        
+        <div class="content">
+            <!-- نموذج الإدخال للزيارة الأولى -->
+            <div class="form-container" id="formContainer">
+                <h2 style="text-align: center; margin-bottom: 20px; color: #4776E6;">الزيارة الأولى</h2>
+                <div class="input-group">
+                    <label for="name">الاسم الكامل:</label>
+                    <input type="text" id="name" placeholder="أدخل اسمك هنا" required>
+                </div>
+                
+                <div class="input-group">
+                    <label for="phone">رقم الهاتف:</label>
+                    <input type="tel" id="phone" placeholder="أدخل رقم هاتفك" required>
+                </div>
+                
+                <button class="btn" id="saveBtn">
+                    <i class="fas fa-save"></i> حفظ البيانات
+                </button>
+            </div>
+            
+            <!-- عرض البيانات للزيارات التالية -->
+            <div class="data-container" id="dataContainer">
+                <div class="avatar">
+                    <i class="fas fa-user"></i>
+                </div>
+                
+                <h2 class="welcome-text">أهلاً بعودتك!</h2>
+                
+                <div class="user-info">
+                    <div class="info-card">
+                        <h3>اسمك الكريم:</h3>
+                        <p id="displayName">محمد أحمد</p>
+                    </div>
+                    
+                    <div class="info-card">
+                        <h3>رقم هاتفك:</h3>
+                        <p id="displayPhone">+966 50 123 4567</p>
+                    </div>
+                </div>
+                
+                <button class="action-btn" id="editBtn">
+                    <i class="fas fa-edit"></i> تعديل البيانات
+                </button>
+            </div>
+        </div>
+        
+        <div class="footer">
+            تم التطوير بلغة HTML، CSS و JavaScript | التخزين المحلي للمتصفح
+        </div>
+    </div>
+    
+    <script>
+        // التحقق من وجود بيانات مخزنة
+        document.addEventListener('DOMContentLoaded', function() {
+            const userName = localStorage.getItem('userName');
+            const userPhone = localStorage.getItem('userPhone');
+            
+            const formContainer = document.getElementById('formContainer');
+            const dataContainer = document.getElementById('dataContainer');
+            const displayName = document.getElementById('displayName');
+            const displayPhone = document.getElementById('displayPhone');
+            
+            if (userName && userPhone) {
+                // عرض البيانات إذا كانت موجودة
+                formContainer.style.display = 'none';
+                dataContainer.style.display = 'flex';
+                displayName.textContent = userName;
+                displayPhone.textContent = userPhone;
+            } else {
+                // عرض النموذج إذا لم تكن البيانات موجودة
+                formContainer.style.display = 'flex';
+                dataContainer.style.display = 'none';
+            }
+            
+            // حفظ البيانات عند النقر على الزر
+            document.getElementById('saveBtn').addEventListener('click', function() {
+                const name = document.getElementById('name').value;
+                const phone = document.getElementById('phone').value;
+                
+                if (name && phone) {
+                    localStorage.setItem('userName', name);
+                    localStorage.setItem('userPhone', phone);
+                    
+                    // عرض البيانات بعد الحفظ
+                    formContainer.style.display = 'none';
+                    dataContainer.style.display = 'flex';
+                    displayName.textContent = name;
+                    displayPhone.textContent = phone;
+                } else {
+                    alert('الرجاء إدخال جميع البيانات المطلوبة');
+                }
+            });
+            
+            // تعديل البيانات
+            document.getElementById('editBtn').addEventListener('click', function() {
+                localStorage.removeItem('userName');
+                localStorage.removeItem('userPhone');
+                
+                // إعادة عرض النموذج
+                formContainer.style.display = 'flex';
+                dataContainer.style.display = 'none';
+                
+                // مسح الحقول
+                document.getElementById('name').value = '';
+                document.getElementById('phone').value = '';
+            });
+        });
+    </script>
+</body>
+</html>
