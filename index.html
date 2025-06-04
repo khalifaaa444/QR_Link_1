@@ -3,19 +3,48 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>بيانات اتصال مالك القطة الضائعة</title>
+    <title>بيانات اتصال كلاب</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800&display=swap" rel="stylesheet">
+    <!-- Firebase SDK -->
+    <script type="module">
+        // Import the functions you need from the SDKs you need
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+        import { getFirestore, doc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+        // Your web app's Firebase configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyDAaBVq8Cje-XYuNjxgJZkuKlGZlbCPwQI",
+            authDomain: "lostcattest-1.firebaseapp.com",
+            projectId: "lostcattest-1",
+            storageBucket: "lostcattest-1.appspot.com",
+            messagingSenderId: "801235048233",
+            appId: "1:801235048233:web:39f8ced879ea0dd3e70938"
+        };
+
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+        
+        // Make Firestore available globally
+        window.firestore = {
+            db,
+            doc,
+            getDoc,
+            setDoc
+        };
+    </script>
     <style>
         :root {
-            --primary: #6a11cb;
-            --secondary: #2575fc;
-            --accent: #ff6b6b;
+            --primary: #8B4513; /* بني خشبي */
+            --secondary: #CD853F; /* بني فاتح */
+            --accent: #DAA520; /* ذهبي */
             --light: #f8f9fa;
             --dark: #212529;
             --success: #20bf6b;
             --card-bg: rgba(255, 255, 255, 0.95);
-            --cat-color: #ff9e7d;
+            --dog-color: #8B4513;
+            --dog-paw: #CD853F;
         }
         
         * {
@@ -26,7 +55,7 @@
         }
         
         body {
-            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            background: linear-gradient(135deg, #5D4037 0%, #8D6E63 100%);
             min-height: 100vh;
             display: flex;
             justify-content: center;
@@ -35,6 +64,7 @@
             color: var(--dark);
             background-size: 400% 400%;
             animation: gradientBG 15s ease infinite;
+            overflow-x: hidden;
         }
         
         @keyframes gradientBG {
@@ -157,6 +187,9 @@
             font-size: 1.1rem;
             color: #555;
             padding-right: 10px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
         }
         
         .input-wrapper {
@@ -177,7 +210,7 @@
         .input-group input:focus {
             border-color: var(--primary);
             outline: none;
-            box-shadow: 0 0 0 4px rgba(106, 17, 203, 0.15);
+            box-shadow: 0 0 0 4px rgba(139, 69, 19, 0.15);
         }
         
         .input-icon {
@@ -202,7 +235,11 @@
             margin-top: 10px;
             position: relative;
             overflow: hidden;
-            box-shadow: 0 10px 20px rgba(106, 17, 203, 0.2);
+            box-shadow: 0 10px 20px rgba(139, 69, 19, 0.2);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
         }
         
         .btn::after {
@@ -219,7 +256,7 @@
         
         .btn:hover {
             transform: translateY(-5px);
-            box-shadow: 0 15px 25px rgba(106, 17, 203, 0.3);
+            box-shadow: 0 15px 25px rgba(139, 69, 19, 0.3);
         }
         
         .btn:hover::after {
@@ -256,8 +293,8 @@
         }
         
         @keyframes pulse {
-            0% { box-shadow: 0 0 0 0px rgba(106, 17, 203, 0.5); }
-            100% { box-shadow: 0 0 0 20px rgba(106, 17, 203, 0); }
+            0% { box-shadow: 0 0 0 0px rgba(139, 69, 19, 0.5); }
+            100% { box-shadow: 0 0 0 20px rgba(139, 69, 19, 0); }
         }
         
         .avatar i {
@@ -339,14 +376,14 @@
             display: inline-flex;
             align-items: center;
             gap: 10px;
-            box-shadow: 0 5px 15px rgba(106, 17, 203, 0.1);
+            box-shadow: 0 5px 15px rgba(139, 69, 19, 0.1);
         }
         
         .action-btn:hover {
             background: var(--primary);
             color: white;
             transform: translateY(-3px);
-            box-shadow: 0 8px 20px rgba(106, 17, 203, 0.25);
+            box-shadow: 0 8px 20px rgba(139, 69, 19, 0.25);
         }
         
         .footer {
@@ -369,48 +406,41 @@
             width: 100px;
             height: 100px;
             border-radius: 50%;
-            background: linear-gradient(45deg, var(--accent), var(--cat-color));
+            background: linear-gradient(45deg, var(--accent), var(--dog-color));
         }
         
-        .triangle {
-            width: 0;
-            height: 0;
-            border-left: 50px solid transparent;
-            border-right: 50px solid transparent;
-            border-bottom: 87px solid var(--success);
-        }
-        
-        .cat-paw {
+        .dog-paw {
             width: 80px;
             height: 80px;
-            background: var(--cat-color);
+            background: var(--dog-paw);
             border-radius: 50%;
             position: relative;
+            animation: pulse 2s infinite;
         }
         
-        .cat-paw::before,
-        .cat-paw::after {
+        .dog-paw::before,
+        .dog-paw::after {
             content: "";
             position: absolute;
-            background: var(--cat-color);
+            background: var(--dog-paw);
             border-radius: 50%;
         }
         
-        .cat-paw::before {
-            width: 50px;
-            height: 50px;
-            top: -20px;
-            left: 15px;
+        .dog-paw::before {
+            width: 40px;
+            height: 40px;
+            top: -15px;
+            left: 20px;
         }
         
-        .cat-paw::after {
-            width: 50px;
-            height: 50px;
-            top: -20px;
-            right: 15px;
+        .dog-paw::after {
+            width: 40px;
+            height: 40px;
+            top: -15px;
+            right: 20px;
         }
         
-        .cat-icon {
+        .dog-icon {
             position: absolute;
             top: 50%;
             left: 50%;
@@ -438,27 +468,298 @@
             padding: 0 20px;
         }
         
-        .cat-info {
-            background: #fff9f7;
-            border-radius: 15px;
-            padding: 15px;
+        .storage-info {
+            background: #e8f4ff;
+            border-radius: 12px;
+            padding: 12px;
             margin-top: 20px;
             text-align: center;
-            border: 2px dashed var(--cat-color);
+            font-size: 0.9rem;
+            color: #2c6db3;
+            border: 1px solid #a9d0ff;
         }
         
-        .cat-info h4 {
-            color: var(--primary);
-            margin-bottom: 10px;
+        .loading {
             display: flex;
-            align-items: center;
             justify-content: center;
-            gap: 10px;
+            align-items: center;
+            padding: 20px;
         }
         
-        .cat-info p {
-            color: #666;
-            line-height: 1.6;
+        .spinner {
+            width: 40px;
+            height: 40px;
+            border: 4px solid rgba(139, 69, 19, 0.2);
+            border-radius: 50%;
+            border-top: 4px solid var(--primary);
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        /* تصميم الكلب التفاعلي */
+        .interactive-dog {
+            position: absolute;
+            bottom: 20px;
+            right: 20px;
+            z-index: 5;
+            cursor: pointer;
+            transition: all 0.4s;
+        }
+        
+        .dog-body {
+            width: 150px;
+            height: 100px;
+            background: linear-gradient(135deg, #8B4513 0%, #A0522D 100%);
+            border-radius: 70px 70px 40px 40px;
+            position: relative;
+            animation: dogFloat 4s infinite ease-in-out;
+        }
+        
+        .dog-head {
+            width: 90px;
+            height: 80px;
+            background: linear-gradient(135deg, #8B4513 0%, #A0522D 100%);
+            border-radius: 50%;
+            position: absolute;
+            top: -40px;
+            left: 30px;
+        }
+        
+        .dog-ear {
+            position: absolute;
+            width: 40px;
+            height: 50px;
+            background: #8B4513;
+            top: -30px;
+            border-radius: 50% 50% 0 0;
+        }
+        
+        .dog-ear.left {
+            left: 15px;
+            transform: rotate(-10deg);
+        }
+        
+        .dog-ear.right {
+            right: 15px;
+            transform: rotate(10deg);
+        }
+        
+        .dog-eye {
+            position: absolute;
+            width: 18px;
+            height: 18px;
+            background: #333;
+            border-radius: 50%;
+            top: 25px;
+        }
+        
+        .dog-eye.left {
+            left: 25px;
+        }
+        
+        .dog-eye.right {
+            right: 25px;
+        }
+        
+        .dog-nose {
+            position: absolute;
+            width: 20px;
+            height: 15px;
+            background: #333;
+            border-radius: 50%;
+            top: 45px;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+        
+        .dog-mouth {
+            position: absolute;
+            width: 40px;
+            height: 20px;
+            border-bottom: 3px solid #333;
+            border-radius: 0 0 50% 50%;
+            top: 55px;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+        
+        .dog-tail {
+            position: absolute;
+            width: 70px;
+            height: 20px;
+            background: #8B4513;
+            border-radius: 10px;
+            right: -60px;
+            top: 30px;
+            transform-origin: left;
+            animation: tailMove 3s infinite ease-in-out;
+        }
+        
+        .dog-paw-btn {
+            position: absolute;
+            width: 50px;
+            height: 50px;
+            background: var(--dog-paw);
+            border-radius: 50%;
+            top: -20px;
+            right: 40px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            transition: all 0.3s;
+            z-index: 10;
+        }
+        
+        .dog-paw-btn:hover {
+            transform: scale(1.1);
+        }
+        
+        .dog-paw-btn i {
+            font-size: 24px;
+            color: #fff;
+        }
+        
+        .claw {
+            position: absolute;
+            width: 5px;
+            height: 15px;
+            background: #fff;
+            border-radius: 5px;
+            bottom: -10px;
+            transform-origin: top;
+            opacity: 0;
+        }
+        
+        .claw-1 { left: 10px; }
+        .claw-2 { left: 22px; }
+        .claw-3 { left: 35px; }
+        
+        .dog-paw-btn:hover .claw {
+            animation: clawOut 0.5s forwards;
+        }
+        
+        @keyframes clawOut {
+            0% { transform: scaleY(0); opacity: 0; }
+            100% { transform: scaleY(1); opacity: 1; }
+        }
+        
+        @keyframes dogFloat {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-15px); }
+        }
+        
+        @keyframes tailMove {
+            0%, 100% { transform: rotate(-10deg); }
+            50% { transform: rotate(10deg); }
+        }
+        
+        /* تصميم مخالب للأيقونات */
+        .icon-claw {
+            position: relative;
+            display: inline-block;
+            width: 24px;
+            height: 24px;
+        }
+        
+        .icon-claw::before {
+            content: "";
+            position: absolute;
+            width: 8px;
+            height: 20px;
+            background: #8B4513;
+            border-radius: 4px;
+            top: 2px;
+            left: 4px;
+            transform: rotate(-20deg);
+        }
+        
+        .icon-claw::after {
+            content: "";
+            position: absolute;
+            width: 8px;
+            height: 20px;
+            background: #8B4513;
+            border-radius: 4px;
+            top: 2px;
+            right: 4px;
+            transform: rotate(20deg);
+        }
+        
+        .claw-icon {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 12px;
+            color: #fff;
+            z-index: 2;
+        }
+        
+        /* أزرار على شكل كفوف */
+        .paw-button {
+            position: relative;
+            width: 60px;
+            height: 60px;
+            background: var(--dog-paw);
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            transition: all 0.3s;
+        }
+        
+        .paw-button:hover {
+            transform: scale(1.1);
+        }
+        
+        .paw-button i {
+            font-size: 24px;
+            color: #fff;
+        }
+        
+        .paw-button .claw {
+            position: absolute;
+            width: 6px;
+            height: 20px;
+            background: #fff;
+            border-radius: 5px;
+            bottom: -8px;
+            transform-origin: top;
+            opacity: 0;
+        }
+        
+        .paw-button:hover .claw {
+            animation: clawOut 0.5s forwards;
+        }
+        
+        .paw-button .claw-1 { left: 12px; }
+        .paw-button .claw-2 { left: 27px; }
+        .paw-button .claw-3 { left: 42px; }
+        
+        /* تعديلات للكلاب */
+        .dog-elements {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1;
+        }
+        
+        .dog-face-element {
+            position: absolute;
+            font-size: 40px;
+            opacity: 0.1;
+            animation: float 25s infinite linear;
         }
         
         @media (max-width: 480px) {
@@ -491,27 +792,66 @@
             .info-card p {
                 font-size: 1.4rem;
             }
+            
+            .interactive-dog {
+                transform: scale(0.8);
+                bottom: 10px;
+                right: 10px;
+            }
         }
     </style>
 </head>
 <body>
     <!-- عناصر عائمة للخلفية -->
+    <div class="dog-elements">
+        <div class="dog-face-element" style="top: 10%; left: 5%; animation-duration: 30s;">🐶</div>
+        <div class="dog-face-element" style="top: 20%; left: 80%; animation-duration: 25s; animation-delay: -5s;">🐕</div>
+        <div class="dog-face-element" style="top: 70%; left: 15%; animation-duration: 35s; animation-delay: -10s;">🐾</div>
+        <div class="dog-face-element" style="top: 85%; left: 75%; animation-duration: 40s; animation-delay: -15s;">🦴</div>
+    </div>
+    
     <div class="floating-element circle" style="top: 10%; left: 5%; animation-duration: 20s;"></div>
-    <div class="floating-element cat-paw" style="top: 70%; left: 80%; animation-duration: 25s; animation-delay: -5s;"></div>
+    <div class="floating-element dog-paw" style="top: 70%; left: 80%; animation-duration: 25s; animation-delay: -5s;"></div>
     <div class="floating-element circle" style="top: 40%; left: 85%; width: 70px; height: 70px; animation-duration: 18s; animation-delay: -3s;"></div>
+    
+    <!-- الكلب التفاعلي -->
+    <div class="interactive-dog">
+        <div class="dog-body">
+            <div class="dog-head">
+                <div class="dog-ear left"></div>
+                <div class="dog-ear right"></div>
+                <div class="dog-eye left"></div>
+                <div class="dog-eye right"></div>
+                <div class="dog-nose"></div>
+                <div class="dog-mouth"></div>
+            </div>
+            <div class="dog-tail"></div>
+        </div>
+        <div class="dog-paw-btn" id="refreshBtn">
+            <i class="fas fa-redo"></i>
+            <div class="claw claw-1"></div>
+            <div class="claw claw-2"></div>
+            <div class="claw claw-3"></div>
+        </div>
+    </div>
     
     <div class="container">
         <div class="header">
-            <h1>قطتي الضائعة</h1>
-            <p>إذا وجدت قطتي الضائعة، الرجاء الاتصال بي على البيانات التالية</p>
+            <h1><i class="fas fa-paw"></i> كلبوبي تاه <i class="fas fa-paw"></i></h1>
+            <p> رجّعني بيتي انا تايه </p>
         </div>
         
         <div class="content">
             <!-- نموذج الإدخال للزيارة الأولى -->
             <div class="form-container" id="formContainer">
-                <h2>بيانات الاتصال</h2>
+                <h2>بيانات التواصل </h2>
                 <div class="input-group">
-                    <label for="name"><i class="fas fa-user"></i> اسمك:</label>
+                    <label for="name">
+                        <div class="icon-claw">
+                            <i class="fas fa-user claw-icon"></i>
+                        </div>
+                        اسمك:
+                    </label>
                     <div class="input-wrapper">
                         <input type="text" id="name" placeholder="أدخل اسمك هنا" required>
                         <div class="input-icon"><i class="fas fa-signature"></i></div>
@@ -519,31 +859,34 @@
                 </div>
                 
                 <div class="input-group">
-                    <label for="phone"><i class="fas fa-mobile-alt"></i> رقم هاتفك:</label>
+                    <label for="phone">
+                        <div class="icon-claw">
+                            <i class="fas fa-mobile-alt claw-icon"></i>
+                        </div>
+                        رقم هاتفك:
+                    </label>
                     <div class="input-wrapper">
                         <input type="tel" id="phone" placeholder="أدخل رقم هاتفك" required>
                         <div class="input-icon"><i class="fas fa-phone"></i></div>
                     </div>
                 </div>
                 
-                <div class="cat-info">
-                    <h4><i class="fas fa-cat"></i> معلومات عن قطتي</h4>
-                    <p>قطتي أنثى، لونها رمادي، عمرها سنتين. فقدتها في منطقة الرياض، حي النخيل. لديها طوق أحمر مكتوب عليه اسمي.</p>
-                </div>
-                
                 <button class="btn" id="saveBtn">
-                    حفظ البيانات <i class="fas fa-save"></i>
+                    <i class="fas fa-paw"></i> حفظ البيانات
                 </button>
+                
+                <div class="storage-info">
+                    سيتم حفظ بياناتك لتظهر عند زيارتك القادمة للموقع
+                </div>
             </div>
             
             <!-- عرض البيانات للزيارات التالية -->
             <div class="data-container" id="dataContainer">
                 <div class="avatar">
-                    <i class="fas fa-cat"></i>
+                    <i class="fas fa-dog"></i>
                 </div>
                 
-                <h2 class="welcome-text">شكرًا لك!</h2>
-                <p class="contact-instruction">إذا وجدت قطتي، الرجاء الاتصال بي على:</p>
+                <h2 class="welcome-text">بيانات الاتصال</h2>
                 
                 <div class="user-info">
                     <div class="info-card">
@@ -557,71 +900,100 @@
                     </div>
                 </div>
                 
-                <div class="cat-info">
-                    <h4><i class="fas fa-info-circle"></i> معلومات عن القطة</h4>
-                    <p>أنثى، لونها رمادي، عمرها سنتين. فقدت في منطقة الرياض، حي النخيل. ترتدي طوقًا أحمر مكتوب عليه اسمي.</p>
+                <div class="paw-button" id="editBtn">
+                    <i class="fas fa-edit"></i>
+                    <div class="claw claw-1"></div>
+                    <div class="claw claw-2"></div>
+                    <div class="claw claw-3"></div>
                 </div>
-                
-                <button class="action-btn" id="editBtn">
-                    <i class="fas fa-edit"></i> تعديل البيانات
-                </button>
+            </div>
+            
+            <!-- حالة التحميل -->
+            <div class="loading" id="loading" style="display: none;">
+                <div class="spinner"></div>
+                <span style="margin-right: 10px;">جاري تحميل البيانات...</span>
             </div>
         </div>
         
         <div class="footer">
-            تم التطوير لمساعدة من يجد القطط الضائعة | التخزين المحلي للمتصفح
+            <i class="fas fa-paw"></i> Designed By PickyPets <i class="fas fa-paw"></i>
         </div>
     </div>
     
     <script>
-        // التحقق من وجود بيانات مخزنة
-        document.addEventListener('DOMContentLoaded', function() {
-            const userName = localStorage.getItem('userName');
-            const userPhone = localStorage.getItem('userPhone');
+        document.addEventListener('DOMContentLoaded', async function() {
+            // Wait for Firebase to initialize
+            while (!window.firestore) {
+                await new Promise(resolve => setTimeout(resolve, 100));
+            }
+            
+            const { db, doc, getDoc, setDoc } = window.firestore;
             
             const formContainer = document.getElementById('formContainer');
             const dataContainer = document.getElementById('dataContainer');
+            const loading = document.getElementById('loading');
             const displayName = document.getElementById('displayName');
             const displayPhone = document.getElementById('displayPhone');
+            const nameInput = document.getElementById('name');
+            const phoneInput = document.getElementById('phone');
+            const saveBtn = document.getElementById('saveBtn');
+            const refreshBtn = document.getElementById('refreshBtn');
+            const editBtn = document.getElementById('editBtn');
             
-            if (userName && userPhone) {
-                // عرض البيانات إذا كانت موجودة
-                formContainer.style.display = 'none';
-                dataContainer.style.display = 'flex';
-                displayName.textContent = userName;
-                displayPhone.textContent = userPhone;
-            } else {
-                // عرض النموذج إذا لم تكن البيانات موجودة
+            // Reference to Firestore document
+            const docRef = doc(db, "dogOwners", "currentOwner1");
+            
+            // Show loading state
+            formContainer.style.display = 'none';
+            dataContainer.style.display = 'none';
+            loading.style.display = 'flex';
+            
+            try {
+                // Try to get data from Firestore
+                const docSnap = await getDoc(docRef);
+                
+                if (docSnap.exists()) {
+                    // Data exists - show data container
+                    const data = docSnap.data();
+                    displayName.textContent = data.name || 'غير متوفر';
+                    displayPhone.textContent = data.phone || 'غير متوفر';
+                    dataContainer.style.display = 'flex';
+                } else {
+                    // No data - show form
+                    formContainer.style.display = 'flex';
+                }
+            } catch (error) {
+                // Error handling
+                console.error("حدث خطأ في جلب البيانات:", error);
+                
+                // Show error message
+                const errorMsg = document.createElement('div');
+                errorMsg.innerHTML = '<i class="fas fa-exclamation-triangle"></i> فشل في تحميل البيانات، الرجاء المحاولة لاحقًا';
+                errorMsg.style.cssText = `
+                    background: var(--accent);
+                    color: white;
+                    padding: 15px;
+                    border-radius: 10px;
+                    text-align: center;
+                    margin: 20px;
+                    font-weight: bold;
+                `;
+                document.querySelector('.content').appendChild(errorMsg);
+                
+                // Show form as fallback
                 formContainer.style.display = 'flex';
-                dataContainer.style.display = 'none';
+            } finally {
+                // Hide loading state
+                loading.style.display = 'none';
             }
             
-            // حفظ البيانات عند النقر على الزر
-            document.getElementById('saveBtn').addEventListener('click', function() {
-                const name = document.getElementById('name').value;
-                const phone = document.getElementById('phone').value;
+            // Save button event listener
+            saveBtn.addEventListener('click', async function() {
+                const name = nameInput.value;
+                const phone = phoneInput.value;
                 
-                if (name && phone) {
-                    localStorage.setItem('userName', name);
-                    localStorage.setItem('userPhone', phone);
-                    
-                    // عرض رسالة نجاح متحركة
-                    const btn = this;
-                    btn.innerHTML = '<i class="fas fa-check"></i> تم الحفظ!';
-                    btn.style.background = 'linear-gradient(90deg, var(--success), #01c896)';
-                    
-                    setTimeout(() => {
-                        btn.innerHTML = 'حفظ البيانات <i class="fas fa-save"></i>';
-                        btn.style.background = 'linear-gradient(90deg, var(--primary) 0%, var(--secondary) 100%)';
-                        
-                        // عرض البيانات بعد الحفظ
-                        formContainer.style.display = 'none';
-                        dataContainer.style.display = 'flex';
-                        displayName.textContent = name;
-                        displayPhone.textContent = phone;
-                    }, 1500);
-                } else {
-                    // عرض رسالة خطأ متحركة
+                if (!name || !phone) {
+                    // Show error animation
                     const inputs = document.querySelectorAll('input');
                     inputs.forEach(input => {
                         if (!input.value) {
@@ -634,7 +1006,7 @@
                         }
                     });
                     
-                    // إنشاء رسالة تنبيه جميلة
+                    // Create alert message
                     const alertMsg = document.createElement('div');
                     alertMsg.innerHTML = '<i class="fas fa-exclamation-circle"></i> الرجاء إدخال جميع البيانات المطلوبة';
                     alertMsg.style.cssText = `
@@ -655,34 +1027,82 @@
                     setTimeout(() => {
                         alertMsg.remove();
                     }, 3000);
+                    return;
+                }
+                
+                try {
+                    // Show saving state
+                    const originalBtnText = saveBtn.innerHTML;
+                    saveBtn.innerHTML = '<i class="fas fa-paw fa-spin"></i> جاري الحفظ...';
+                    saveBtn.disabled = true;
+                    
+                    // Save to Firestore
+                    await setDoc(docRef, {
+                        name: name,
+                        phone: phone,
+                        timestamp: new Date()
+                    });
+                    
+                    // Show success animation
+                    saveBtn.innerHTML = '<i class="fas fa-check"></i> تم الحفظ!';
+                    saveBtn.style.background = 'linear-gradient(90deg, var(--success), #01c896)';
+                    
+                    setTimeout(() => {
+                        // Reset button
+                        saveBtn.innerHTML = originalBtnText;
+                        saveBtn.style.background = 'linear-gradient(90deg, var(--primary) 0%, var(--secondary) 100%)';
+                        saveBtn.disabled = false;
+                        
+                        // Show data container
+                        formContainer.style.display = 'none';
+                        dataContainer.style.display = 'flex';
+                        displayName.textContent = name;
+                        displayPhone.textContent = phone;
+                    }, 1500);
+                } catch (error) {
+                    console.error("حدث خطأ في حفظ البيانات:", error);
+                    
+                    // Show error message
+                    const alertMsg = document.createElement('div');
+                    alertMsg.innerHTML = '<i class="fas fa-exclamation-triangle"></i> فشل في حفظ البيانات، الرجاء المحاولة لاحقًا';
+                    alertMsg.style.cssText = `
+                        position: fixed;
+                        top: 20px;
+                        right: 20px;
+                        background: var(--accent);
+                        color: white;
+                        padding: 15px 25px;
+                        border-radius: 10px;
+                        box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+                        z-index: 1000;
+                    `;
+                    
+                    document.body.appendChild(alertMsg);
+                    
+                    setTimeout(() => {
+                        alertMsg.remove();
+                    }, 3000);
+                    
+                    // Reset button
+                    saveBtn.innerHTML = originalBtnText;
+                    saveBtn.disabled = false;
                 }
             });
             
-            // تعديل البيانات
-            document.getElementById('editBtn').addEventListener('click', function() {
-                // إضافة تأثير اختفاء
-                dataContainer.style.animation = 'fadeOut 0.5s';
-                
-                setTimeout(() => {
-                    // إعادة عرض النموذج
-                    formContainer.style.display = 'flex';
-                    dataContainer.style.display = 'none';
-                    dataContainer.style.animation = '';
-                    
-                    // تعبئة الحقول بالبيانات الحالية
-                    document.getElementById('name').value = localStorage.getItem('userName') || '';
-                    document.getElementById('phone').value = localStorage.getItem('userPhone') || '';
-                    
-                    // إضافة تأثير ظهور للنموذج
-                    formContainer.style.animation = 'fadeIn 0.5s';
-                    
-                    setTimeout(() => {
-                        formContainer.style.animation = '';
-                    }, 500);
-                }, 500);
+            // Refresh button event listener
+            refreshBtn.addEventListener('click', function() {
+                location.reload();
             });
             
-            // إضافة أنماط للرسوم المتحركة
+            // Edit button event listener
+            editBtn.addEventListener('click', function() {
+                dataContainer.style.display = 'none';
+                formContainer.style.display = 'flex';
+                nameInput.value = displayName.textContent;
+                phoneInput.value = displayPhone.textContent;
+            });
+            
+            // Add animation styles
             const style = document.createElement('style');
             style.innerHTML = `
                 @keyframes shake {
