@@ -1089,7 +1089,7 @@
                     await setDoc(docRef, {
                         name: name,
                         phone: phone,
-                        notes: notes || 'لا توجد ملاحظات إضافية',
+                        notes: notes || 'لا توجد معلومات إضافية',
                         timestamp: new Date()
                     });
                     
@@ -1108,7 +1108,7 @@
                         dataContainer.style.display = 'flex';
                         displayName.textContent = name;
                         displayPhone.textContent = phone;
-                        displayNotes.textContent = notes || 'لا توجد ملاحظات إضافية';
+                        displayNotes.textContent = notes || 'لا توجد معلومات إضافية';
                     }, 1500);
                 } catch (error) {
                     console.error("حدث خطأ في حفظ البيانات:", error);
@@ -1151,7 +1151,7 @@
                 formContainer.style.display = 'flex';
                 nameInput.value = displayName.textContent;
                 phoneInput.value = displayPhone.textContent;
-                notesInput.value = displayNotes.textContent === 'لا توجد ملاحظات إضافية' ? '' : displayNotes.textContent;
+                notesInput.value = displayNotes.textContent === 'لا توجد معلومات إضافية' ? '' : displayNotes.textContent;
             });
             
             // Add animation styles
