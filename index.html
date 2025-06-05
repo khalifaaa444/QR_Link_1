@@ -196,7 +196,7 @@
             position: relative;
         }
         
-        .input-group input {
+        .input-group input, .input-group textarea {
             padding: 16px 50px 16px 20px;
             border: 2px solid #e0e0e0;
             border-radius: 15px;
@@ -207,7 +207,7 @@
             box-shadow: 0 5px 15px rgba(0, 0, 0, 0.03);
         }
         
-        .input-group input:focus {
+        .input-group input:focus, .input-group textarea:focus {
             border-color: var(--primary);
             outline: none;
             box-shadow: 0 0 0 4px rgba(139, 69, 19, 0.15);
@@ -215,11 +215,24 @@
         
         .input-icon {
             position: absolute;
-            top: 50%;
+            top: 18px;
             left: 18px;
-            transform: translateY(-50%);
             color: #aaa;
             font-size: 1.2rem;
+        }
+        
+        /* تعديلات خاصة بحقل الملاحظات */
+        .input-group textarea {
+            min-height: 100px;
+            resize: vertical;
+            padding-right: 20px;
+            padding-left: 50px;
+        }
+        
+        .input-group textarea + .input-icon {
+            top: 18px;
+            left: 18px;
+            transform: none;
         }
         
         .btn {
@@ -352,6 +365,15 @@
             font-weight: 700;
             color: var(--dark);
             direction: ltr;
+        }
+        
+        .notes-card p {
+            font-size: 1.2rem;
+            font-weight: 500;
+            direction: rtl;
+            text-align: right;
+            white-space: pre-wrap;
+            line-height: 1.6;
         }
         
         .welcome-text {
@@ -871,6 +893,20 @@
                     </div>
                 </div>
                 
+                <!-- خانة الملاحظات المضافة -->
+                <div class="input-group">
+                    <label for="notes">
+                        <div class="icon-claw">
+                            <i class="fas fa-sticky-note claw-icon"></i>
+                        </div>
+                        معلومات إضافية:
+                    </label>
+                    <div class="input-wrapper">
+                        <textarea id="notes" placeholder="اكتب أي معلومات حابب تحفظها لحيوانك عشان متنسهاش"></textarea>
+                        <div class="input-icon"><i class="fas fa-pen"></i></div>
+                    </div>
+                </div>
+                
                 <button class="btn" id="saveBtn">
                     <i class="fas fa-paw"></i> حفظ البيانات
                 </button>
@@ -897,6 +933,12 @@
                     <div class="info-card">
                         <h3><i class="fas fa-phone-alt"></i> رقم هاتفي:</h3>
                         <p id="displayPhone">+966 50 123 4567</p>
+                    </div>
+                    
+                    <!-- بطاقة عرض الملاحظات المضافة -->
+                    <div class="info-card notes-card">
+                        <h3><i class="fas fa-sticky-note"></i> معلومات عن الكلب:</h3>
+                        <p id="displayNotes">لا توجد معلومات إضافية</p>
                     </div>
                 </div>
                 
@@ -934,8 +976,10 @@
             const loading = document.getElementById('loading');
             const displayName = document.getElementById('displayName');
             const displayPhone = document.getElementById('displayPhone');
+            const displayNotes = document.getElementById('displayNotes');
             const nameInput = document.getElementById('name');
             const phoneInput = document.getElementById('phone');
+            const notesInput = document.getElementById('notes');
             const saveBtn = document.getElementById('saveBtn');
             const refreshBtn = document.getElementById('refreshBtn');
             const editBtn = document.getElementById('editBtn');
@@ -957,6 +1001,10 @@
                     const data = docSnap.data();
                     displayName.textContent = data.name || 'غير متوفر';
                     displayPhone.textContent = data.phone || 'غير متوفر';
+                    
+                    // عرض الملاحظات أو رسالة افتراضية إذا كانت فارغة
+                    displayNotes.textContent = data.notes || 'لا توجد ملاحظات إضافية';
+                    
                     dataContainer.style.display = 'flex';
                 } else {
                     // No data - show form
@@ -991,6 +1039,7 @@
             saveBtn.addEventListener('click', async function() {
                 const name = nameInput.value;
                 const phone = phoneInput.value;
+                const notes = notesInput.value;
                 
                 if (!name || !phone) {
                     // Show error animation
@@ -1040,6 +1089,7 @@
                     await setDoc(docRef, {
                         name: name,
                         phone: phone,
+                        notes: notes || 'لا توجد ملاحظات إضافية',
                         timestamp: new Date()
                     });
                     
@@ -1058,6 +1108,7 @@
                         dataContainer.style.display = 'flex';
                         displayName.textContent = name;
                         displayPhone.textContent = phone;
+                        displayNotes.textContent = notes || 'لا توجد ملاحظات إضافية';
                     }, 1500);
                 } catch (error) {
                     console.error("حدث خطأ في حفظ البيانات:", error);
@@ -1100,6 +1151,7 @@
                 formContainer.style.display = 'flex';
                 nameInput.value = displayName.textContent;
                 phoneInput.value = displayPhone.textContent;
+                notesInput.value = displayNotes.textContent === 'لا توجد ملاحظات إضافية' ? '' : displayNotes.textContent;
             });
             
             // Add animation styles
